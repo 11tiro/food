@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>たべものログ - Friends & Foods</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      background: #f5f5f5;
+      color: #333;
+    }
+
+    header {
+      background: #ffb347;
+      background: linear-gradient(135deg, #ffcc70, #ff7e5f);
+      color: white;
+      padding: 20px 16px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    header p {
+      margin: 8px 0 0;
+      font-size: 0.9rem;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+      align-items: center;
+    }
+
+    .controls label {
+      font-size: 0.9rem;
+    }
+
+    .controls input {
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 0.9rem;
+    }
+
+    .entry-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+    }
+
+    .entry {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .entry img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+    }
+
+    .entry-body {
+      padding: 10px 12px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .entry-title {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .entry-date {
+      font-size: 0.8rem;
+      color: #777;
+    }
+
+    .entry-meta {
+      font-size: 0.85rem;
+      color: #555;
+      line-height: 1.4;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    .tag {
+      font-size: 0.75rem;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: #ffe5cf;
+      color: #a35600;
+    }
+
+    .friends {
+      font-size: 0.8rem;
+      color: #444;
+    }
+
+    .memo {
+      font-size: 0.85rem;
+      color: #333;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #888;
+      padding: 16px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>たべものログ</h1>
+    <p>友達と今まで食べたものをまとめるホームページ</p>
+  </header>
+
+  <main>
+    <!-- 検索ボックス（友達の名前や店名でフィルタ） -->
+    <section class="controls">
+      <label>
+        🔍 キーワードで絞り込み：
+        <input type="text" id="searchInput" placeholder="例）ラーメン / さくら / カフェ">
+      </label>
+    </section>
+
+    <!-- ここにカードを追加していく -->
+    <section class="entry-list" id="entryList">
+
+      <!-- ▼ 1件目の例 ▼ -->
+      <article class="entry" data-text="ラーメン 太郎 さくら 博多 とんこつ">
+        <!-- 写真は自分の画像ファイルに差し替えてOK -->
+        <img src="sample1.jpg" alt="博多ラーメンの写真（ダミー）">
+        <div class="entry-body">
+          <div class="entry-header">
+            <div class="entry-title">博多とんこつラーメン</div>
+            <div class="entry-date">2025-03-12</div>
+          </div>
+          <div class="entry-meta">
+            <div>📍 店：ラーメン太郎（博多駅近く）</div>
+            <div class="friends">👥 一緒に行った人：さくら、ゆう</div>
+          </div>
+          <div class="memo">
+            替え玉2回して満腹！スープが濃厚でおいしかった。ゆうが辛さMAXを頼んでて笑った。
+          </div>
+          <div class="tag-list">
+            <span class="tag">ラーメン</span>
+            <span class="tag">とんこつ</span>
+            <span class="tag">博多</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- ▼ 2件目の例 ▼ -->
+      <article class="entry" data-text="パンケーキ カフェ みき 天神 スイーツ">
+        <img src="sample2.jpg" alt="パンケーキの写真（ダミー）">
+        <div class="entry-body">
+          <div class="entry-header">
+            <div class="entry-title">ふわふわパンケーキ</div>
+            <div class="entry-date">2025-04-02</div>
+          </div>
+          <div class="entry-meta">
+            <div>📍 店：Cafe Lumière（天神）</div>
+            <div class="friends">👥 一緒に行った人：みき</div>
+          </div>
+          <div class="memo">
+            思ったよりボリュームあってランチ代わりになった。メープルシロップが最高。
+          </div>
+          <div class="tag-list">
+            <span class="tag">スイーツ</span>
+            <span class="tag">パンケーキ</span>
+            <span class="tag">カフェ</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- ▼ 3件目の例 ▼ -->
+      <article class="entry" data-text="焼肉 食べ放題 たけし 山口">
+        <img src="sample3.jpg" alt="焼肉の写真（ダミー）">
+        <div class="entry-body">
+          <div class="entry-header">
+            <div class="entry-title">焼肉食べ放題</div>
+            <div class="entry-date">2025-05-10</div>
+          </div>
+          <div class="entry-meta">
+            <div>📍 店：カルビキング（山口市）</div>
+            <div class="friends">👥 一緒に行った人：たけし、なおと</div>
+          </div>
+          <div class="memo">
+            制限時間ギリギリまで食べた。なおとがデザートまで全力でいっていて尊敬した。
+          </div>
+          <div class="tag-list">
+            <span class="tag">焼肉</span>
+            <span class="tag">食べ放題</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- ▼ 新しく追加したいときは、この下をコピペして編集していく ▼ -->
+
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2025 Friends & Foods Log
+  </footer>
+
+  <script>
+    // 簡易検索（キーワードでカードを絞り込み）
+    const searchInput = document.getElementById('searchInput');
+    const entryList = document.getElementById('entryList');
+    const entries = Array.from(entryList.querySelectorAll('.entry'));
+
+    searchInput.addEventListener('input', () => {
+      const keyword = searchInput.value.trim().toLowerCase();
+      entries.forEach(entry => {
+        const text = entry.dataset.text.toLowerCase();
+        if (!keyword || text.includes(keyword)) {
+          entry.style.display = "";
+        } else {
+          entry.style.display = "none";
+        }
+      });
+    });
+  </script>
+</body>
+</html>
