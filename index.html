@@ -157,74 +157,60 @@
     <!-- ここにカードを追加していく -->
     <section class="entry-list" id="entryList">
 
-      <!-- ▼ 1件目の例 ▼ -->
-      <article class="entry" data-text="ラーメン 太郎 さくら 博多 とんこつ">
-        <!-- 写真は自分の画像ファイルに差し替えてOK -->
-        <img src="sample1.jpg" alt="博多ラーメンの写真（ダミー）">
-        <div class="entry-body">
-          <div class="entry-header">
-            <div class="entry-title">博多とんこつラーメン</div>
-            <div class="entry-date">2025-03-12</div>
-          </div>
-          <div class="entry-meta">
-            <div>📍 店：ラーメン太郎（博多駅近く）</div>
-            <div class="friends">👥 一緒に行った人：さくら、ゆう</div>
-          </div>
-          <div class="memo">
-            替え玉2回して満腹！スープが濃厚でおいしかった。ゆうが辛さMAXを頼んでて笑った。
-          </div>
-          <div class="tag-list">
-            <span class="tag">ラーメン</span>
-            <span class="tag">とんこつ</span>
-            <span class="tag">博多</span>
-          </div>
-        </div>
-      </article>
+    <script>
+  async function loadFoodsFromCSV() {
+    try {
+      // foods.csv を取得
+      const res = await fetch('foods.csv');
+      if (!res.ok) {
+        console.error('CSV を読み込めませんでした', res.status);
+        return;
+      }
+      const text = await res.text();
 
-      <!-- ▼ 2件目の例 ▼ -->
-      <article class="entry" data-text="パンケーキ カフェ みき 天神 スイーツ">
-        <img src="sample2.jpg" alt="パンケーキの写真（ダミー）">
-        <div class="entry-body">
-          <div class="entry-header">
-            <div class="entry-title">ふわふわパンケーキ</div>
-            <div class="entry-date">2025-04-02</div>
-          </div>
-          <div class="entry-meta">
-            <div>📍 店：Cafe Lumière（天神）</div>
-            <div class="friends">👥 一緒に行った人：みき</div>
-          </div>
-          <div class="memo">
-            思ったよりボリュームあってランチ代わりになった。メープルシロップが最高。
-          </div>
-          <div class="tag-list">
-            <span class="tag">スイーツ</span>
-            <span class="tag">パンケーキ</span>
-            <span class="tag">カフェ</span>
-          </div>
-        </div>
-      </article>
+      // 行ごとに分割
+      const lines = text.trim().split('\n');
+      if (lines.length <= 1) return; // データなし
 
-      <!-- ▼ 3件目の例 ▼ -->
-      <article class="entry" data-text="焼肉 食べ放題 たけし 山口">
-        <img src="sample3.jpg" alt="焼肉の写真（ダミー）">
-        <div class="entry-body">
-          <div class="entry-header">
-            <div class="entry-title">焼肉食べ放題</div>
-            <div class="entry-date">2025-05-10</div>
+      // 1行目はヘッダー（date,place,photo）
+      const dataLines = lines.slice(1);
+
+      const records = dataLines.map(line => {
+        const cols = line.split(',');
+        return {
+          date:  cols[0]?.trim() ?? '',
+          place: cols[1]?.trim() ?? '',
+          photo: cols[2]?.trim() ?? ''
+        };
+      });
+
+      const list = document.getElementById('entryList');
+      list.innerHTML = ''; // いったん空にする
+
+      // 1件ずつカードを作る
+      records.forEach(item => {
+        const article = document.createElement('article');
+        article.className = 'entry';
+        article.innerHTML = `
+          <img src="${item.photo}" alt="${item.place}">
+          <div class="entry-body">
+            <div class="entry-header">
+              <div class="entry-title">${item.place}</div>
+              <div class="entry-date">${item.date}</div>
+            </div>
           </div>
-          <div class="entry-meta">
-            <div>📍 店：カルビキング（山口市）</div>
-            <div class="friends">👥 一緒に行った人：たけし、なおと</div>
-          </div>
-          <div class="memo">
-            制限時間ギリギリまで食べた。なおとがデザートまで全力でいっていて尊敬した。
-          </div>
-          <div class="tag-list">
-            <span class="tag">焼肉</span>
-            <span class="tag">食べ放題</span>
-          </div>
-        </div>
-      </article>
+        `;
+        list.appendChild(article);
+      });
+    } catch (e) {
+      console.error('CSV 読み込み中にエラーが発生しました', e);
+    }
+  }
+
+  // ページ読み込み完了時に実行
+  document.addEventListener('DOMContentLoaded', loadFoodsFromCSV);
+</script>
+
 
       <!-- ▼ 新しく追加したいときは、この下をコピペして編集していく ▼ -->
 
