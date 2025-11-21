@@ -4,131 +4,41 @@
   <meta charset="UTF-8">
   <title>たべものログ - Friends & Foods</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <style>
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       margin: 0;
-      background: #f5f5f5;
+      background: #f7f4f0;
       color: #333;
     }
 
     header {
-      background: #ffb347;
       background: linear-gradient(135deg, #ffcc70, #ff7e5f);
       color: white;
-      padding: 20px 16px;
+      padding: 16px 12px;
       text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
     header h1 {
       margin: 0;
-      font-size: 1.8rem;
+      font-size: 1.6rem;
     }
 
     header p {
-      margin: 8px 0 0;
+      margin: 4px 0 0;
       font-size: 0.9rem;
+      opacity: 0.9;
     }
 
     main {
-      max-width: 900px;
+      max-width: 960px;
       margin: 0 auto;
       padding: 16px;
-    }
-
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 16px;
-      align-items: center;
-    }
-
-    .controls label {
-      font-size: 0.9rem;
-    }
-
-    .controls input {
-      padding: 6px 8px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 0.9rem;
-    }
-
-    .entry-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 12px;
-    }
-
-    .entry {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .entry img {
-      width: 100%;
-      height: 160px;
-      object-fit: cover;
-    }
-
-    .entry-body {
-      padding: 10px 12px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .entry-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 4px;
-    }
-
-    .entry-title {
-      font-weight: 600;
-      font-size: 1rem;
-    }
-
-    .entry-date {
-      font-size: 0.8rem;
-      color: #777;
-    }
-
-    .entry-meta {
-      font-size: 0.85rem;
-      color: #555;
-      line-height: 1.4;
-    }
-
-    .tag-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      margin-top: 4px;
-    }
-
-    .tag {
-      font-size: 0.75rem;
-      padding: 2px 6px;
-      border-radius: 999px;
-      background: #ffe5cf;
-      color: #a35600;
-    }
-
-    .friends {
-      font-size: 0.8rem;
-      color: #444;
-    }
-
-    .memo {
-      font-size: 0.85rem;
-      color: #333;
+      min-height: 80vh;
     }
 
     footer {
@@ -137,83 +47,465 @@
       color: #888;
       padding: 16px;
     }
+
+    /* 画面（view）の切り替え */
+    .view {
+      display: none;
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ホーム画面 */
+    .home-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+      gap: 16px;
+      align-items: center;
+    }
+
+    @media (max-width: 720px) {
+      .home-hero {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .slideshow {
+      background: #222;
+      border-radius: 18px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      min-height: 260px;
+    }
+
+    .slideshow img {
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .slide-caption {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 10px 14px;
+      background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0));
+      color: #fff;
+      font-size: 0.9rem;
+    }
+
+    .slide-caption-place {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .slide-caption-date {
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+
+    .home-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .home-buttons p {
+      margin: 0 0 6px;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    }
+
+    .btn-primary {
+      background: #ff9966;
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(255,153,102,0.5);
+    }
+
+    .btn-outline {
+      background: #fff7f0;
+      color: #d06423;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.16);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .back-btn {
+      margin-bottom: 10px;
+    }
+
+    /* 検索画面共通 */
+    .search-header {
+      margin-bottom: 12px;
+    }
+
+    .search-header h2 {
+      margin: 0 0 4px;
+      font-size: 1.3rem;
+    }
+
+    .search-header p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    .search-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .search-controls input,
+    .search-controls select {
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid #ccc;
+      font-size: 0.9rem;
+      min-width: 180px;
+    }
+
+    .search-controls label {
+      font-size: 0.85rem;
+      color: #555;
+    }
+
+    .entry-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .entry-card {
+      background: #fff;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .entry-card img {
+      width: 100%;
+      height: 170px;
+      object-fit: cover;
+    }
+
+    .entry-card-body {
+      padding: 8px 10px 10px;
+    }
+
+    .entry-card-place {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .entry-card-date {
+      font-size: 0.8rem;
+      color: #777;
+    }
+
+    .no-results {
+      font-size: 0.9rem;
+      color: #777;
+      margin-top: 8px;
+    }
+
+    /* 地図表示用 */
+    .map-wrapper {
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .japan-map-image {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+    }
+
+    .region-map-image {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+      margin-bottom: 10px;
+    }
+
+    .pref-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .btn-pref {
+      border: none;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      background: #fff7f0;
+      color: #c15a1f;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+    }
+
+    .btn-pref:hover {
+      background: #ffe3c8;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.16);
+    }
   </style>
 </head>
 <body>
   <header>
     <h1>たべものログ</h1>
-    <p>友達と今まで食べたものをまとめるホームページ</p>
+    <p>友達と食べたごはんの記録</p>
   </header>
 
   <main>
-    <!-- 検索ボックス（友達の名前や店名でフィルタ） -->
-    <section class="controls">
-      <label>
-        🔍 キーワードで絞り込み：
-        <input type="text" id="searchInput" placeholder="例）ラーメン / さくら / カフェ">
-      </label>
+    <!-- ホーム画面 -->
+    <section id="view-home" class="view active">
+      <div class="home-hero">
+        <div class="slideshow">
+          <img id="slideImage" src="" alt="">
+          <div class="slide-caption">
+            <div id="slidePlace" class="slide-caption-place"></div>
+            <div id="slideDate" class="slide-caption-date"></div>
+          </div>
+        </div>
+        <div class="home-buttons">
+          <p>見たい探し方をえらんでください：</p>
+          <button class="btn btn-primary" data-target="keyword">
+            🔍 キーワードで探す
+          </button>
+          <button class="btn btn-outline" data-target="place">
+            📍 場所から探す
+          </button>
+          <button class="btn btn-outline" data-target="date">
+            📅 日付で探す
+          </button>
+        </div>
+      </div>
     </section>
 
-    <!-- ここにカードを追加していく -->
-    <section class="entry-list" id="entryList">
+    <!-- キーワード検索画面 -->
+    <section id="view-keyword" class="view">
+      <button class="btn back-btn" data-target="home">← ホームに戻る</button>
+      <div class="search-header">
+        <h2>キーワードで探す</h2>
+        <p>店の名前・場所名などを入力してください。</p>
+      </div>
+      <div class="search-controls">
+        <label>
+          🔍
+          <input type="text" id="keywordInput" placeholder="例）ラーメン / カフェ / 山口">
+        </label>
+      </div>
+      <div id="keywordResults" class="entry-list"></div>
+      <div id="keywordNoResults" class="no-results" style="display:none;">
+        該当する記録がありませんでした。
+      </div>
+    </section>
 
-    <script>
-  async function loadFoodsFromCSV() {
-    try {
-      // foods.csv を取得
-      const res = await fetch('foods.csv');
-      if (!res.ok) {
-        console.error('CSV を読み込めませんでした', res.status);
-        return;
-      }
-      const text = await res.text();
+    <!-- 場所検索画面（日本地図＋セレクト） -->
+    <section id="view-place" class="view">
+      <button class="btn back-btn" data-target="home">← ホームに戻る</button>
+      <div class="search-header">
+        <h2>場所で探す</h2>
+        <p>日本地図のエリアをタップするか、場所名を選んでください。</p>
+      </div>
 
-      // 行ごとに分割
-      const lines = text.trim().split('\n');
-      if (lines.length <= 1) return; // データなし
+      <!-- 日本地図画像 -->
+      <div class="map-wrapper">
+        <img src="japan_map.png"
+             alt="日本地図"
+             usemap="#japanMap"
+             class="japan-map-image">
+             
+             <map name="japanMap">
+              <!-- 北海道 -->
+               <area shape="rect"
+        coords="350,40,520,150"
+        href="#"
+        alt="北海道"
+        data-region="hokkaido">
 
-      // 1行目はヘッダー（date,place,photo）
-      const dataLines = lines.slice(1);
+  <!-- 東北 -->
+  <area shape="rect"
+        coords="350,150,520,240"
+        href="#"
+        alt="東北"
+        data-region="tohoku">
 
-      const records = dataLines.map(line => {
-        const cols = line.split(',');
-        return {
-          date:  cols[0]?.trim() ?? '',
-          place: cols[1]?.trim() ?? '',
-          photo: cols[2]?.trim() ?? ''
-        };
-      });
+  <!-- 関東（今回追加するビュー） -->
+  <area shape="rect"
+        coords="350,240,520,320"
+        href="#"
+        alt="関東"
+        data-region="kanto">
 
-      const list = document.getElementById('entryList');
-      list.innerHTML = ''; // いったん空にする
+  <!-- 中部 -->
+  <area shape="rect"
+        coords="320,320,500,400"
+        href="#"
+        alt="中部"
+        data-region="chubu">
 
-      // 1件ずつカードを作る
-      records.forEach(item => {
-        const article = document.createElement('article');
-        article.className = 'entry';
-        article.innerHTML = `
-          <img src="${item.photo}" alt="${item.place}">
-          <div class="entry-body">
-            <div class="entry-header">
-              <div class="entry-title">${item.place}</div>
-              <div class="entry-date">${item.date}</div>
-            </div>
-          </div>
-        `;
-        list.appendChild(article);
-      });
-    } catch (e) {
-      console.error('CSV 読み込み中にエラーが発生しました', e);
-    }
-  }
+  <!-- 近畿 -->
+  <area shape="rect"
+        coords="260,320,360,420"
+        href="#"
+        alt="近畿"
+        data-region="kinki">
 
-  // ページ読み込み完了時に実行
-  document.addEventListener('DOMContentLoaded', loadFoodsFromCSV);
-</script>
+  <!-- 中国 -->
+  <area shape="rect"
+        coords="220,340,320,420"
+        href="#"
+        alt="中国"
+        data-region="chugoku">
+
+  <!-- 四国 -->
+  <area shape="rect"
+        coords="240,420,320,480"
+        href="#"
+        alt="四国"
+        data-region="shikoku">
+
+  <!-- 九州 -->
+  <area shape="rect"
+        coords="180,420,320,520"
+        href="#"
+        alt="九州"
+        data-region="kyushu">
+</map>
 
 
-      <!-- ▼ 新しく追加したいときは、この下をコピペして編集していく ▼ -->
+      </div>
 
+      <!-- セレクトボックス -->
+      <div class="search-controls">
+        <label>
+          📍 場所：
+          <select id="placeSelect">
+            <option value="">場所を選択...</option>
+          </select>
+        </label>
+      </div>
+      <div id="placeResults" class="entry-list"></div>
+      <div id="placeNoResults" class="no-results" style="display:none;">
+        この場所の記録はまだありません。
+      </div>
+    </section>
+
+    <!-- 日付検索画面 -->
+    <section id="view-date" class="view">
+      <button class="btn back-btn" data-target="home">← ホームに戻る</button>
+      <div class="search-header">
+        <h2>日付で探す</h2>
+        <p>特定の日に食べたものを表示します。（形式：YYYY-MM-DD）</p>
+      </div>
+      <div class="search-controls">
+        <label>
+          📅 日付：
+          <input type="date" id="dateInput">
+        </label>
+      </div>
+      <div id="dateResults" class="entry-list"></div>
+      <div id="dateNoResults" class="no-results" style="display:none;">
+        この日付の記録はまだありません。
+      </div>
+    </section>
+
+    <!-- 九州拡大画面 -->
+    <section id="view-kyushu" class="view">
+      <button class="btn back-btn" data-target="place">← 日本地図に戻る</button>
+      <div class="search-header">
+        <h2>九州・沖縄から探す</h2>
+        <p>県を選ぶと、その県で食べたごはんが表示されます。</p>
+      </div>
+
+      <img src="kyushu_map.png" alt="九州の地図" class="region-map-image">
+
+      <div class="pref-buttons">
+        <button type="button" class="btn-pref" data-pref="福岡">福岡</button>
+        <button type="button" class="btn-pref" data-pref="佐賀">佐賀</button>
+        <button type="button" class="btn-pref" data-pref="長崎">長崎</button>
+        <button type="button" class="btn-pref" data-pref="熊本">熊本</button>
+        <button type="button" class="btn-pref" data-pref="大分">大分</button>
+        <button type="button" class="btn-pref" data-pref="宮崎">宮崎</button>
+        <button type="button" class="btn-pref" data-pref="鹿児島">鹿児島</button>
+        <button type="button" class="btn-pref" data-pref="沖縄">沖縄</button>
+      </div>
+
+      <div id="kyushuResults" class="entry-list"></div>
+      <div id="kyushuNoResults" class="no-results" style="display:none;">
+        この県の記録はまだありません。
+      </div>
+    </section>
+
+    <!-- 関東拡大画面 -->
+    <section id="view-kanto" class="view">
+      <button class="btn back-btn" data-target="place">← 日本地図に戻る</button>
+      <div class="search-header">
+        <h2>関東から探す</h2>
+        <p>県を選ぶと、その県で食べたごはんが表示されます。</p>
+      </div>
+
+      <!-- 関東の地図画像を作ったらここに img を置いてOK -->
+      <!-- <img src="kanto_map.png" alt="関東の地図" class="region-map-image"> -->
+
+      <div class="pref-buttons">
+        <button type="button" class="btn-pref" data-pref="東京都">東京</button>
+        <button type="button" class="btn-pref" data-pref="神奈川">神奈川</button>
+        <button type="button" class="btn-pref" data-pref="千葉">千葉</button>
+        <button type="button" class="btn-pref" data-pref="埼玉">埼玉</button>
+        <button type="button" class="btn-pref" data-pref="茨城">茨城</button>
+        <button type="button" class="btn-pref" data-pref="栃木">栃木</button>
+        <button type="button" class="btn-pref" data-pref="群馬">群馬</button>
+      </div>
+
+      <div id="kantoResults" class="entry-list"></div>
+      <div id="kantoNoResults" class="no-results" style="display:none;">
+        この県の記録はまだありません。
+      </div>
     </section>
   </main>
 
@@ -221,23 +513,7 @@
     &copy; 2025 Friends & Foods Log
   </footer>
 
-  <script>
-    // 簡易検索（キーワードでカードを絞り込み）
-    const searchInput = document.getElementById('searchInput');
-    const entryList = document.getElementById('entryList');
-    const entries = Array.from(entryList.querySelectorAll('.entry'));
-
-    searchInput.addEventListener('input', () => {
-      const keyword = searchInput.value.trim().toLowerCase();
-      entries.forEach(entry => {
-        const text = entry.dataset.text.toLowerCase();
-        if (!keyword || text.includes(keyword)) {
-          entry.style.display = "";
-        } else {
-          entry.style.display = "none";
-        }
-      });
-    });
-  </script>
+  <!-- JavaScript は main.js だけを読み込む -->
+  <script src="main.js"></script>
 </body>
 </html>
